@@ -41,7 +41,7 @@ function Card(props: {
               }
             }`,
         {
-          collectionId: collection,
+          collectionId: collection.toLowerCase(),
         }
     ).toPromise();
 

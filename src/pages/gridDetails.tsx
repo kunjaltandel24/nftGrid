@@ -1,4 +1,3 @@
-import axios from "axios";
 import {Contract, ContractInterface} from "ethers";
 import React, {useCallback, useEffect, useState} from "react";
 import { createClient } from 'urql'
@@ -13,6 +12,7 @@ function GridDetails() {
     const {address, connector} = useAccount();
     const [data, setData] = useState<any>({});
     const [mints, setMints] = useState<any[]>([]);
+    const [currentMintLoaded, setCurrentMintLoaded] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null)
     const [parentCollections, setParentCollections] = useState<any[]>([]);
 
@@ -48,6 +48,7 @@ function GridDetails() {
     }, [collectionId, connector]);
 
     const fetchMints = async () => {
+        setCurrentMintLoaded(false)
         const client = createClient({
             url: 'https://api.thegraph.com/subgraphs/name/yashthakor/grid-one',
         });
@@ -62,11 +63,12 @@ function GridDetails() {
               }
             }`,
             {
-                collectionId,
+                collectionId: (collectionId || '').toLowerCase(),
             }
         ).toPromise();
 
-        setMints(resp.data.data.mints);
+        setMints(resp.data.mints);
+        setCurrentMintLoaded(true);
     };
 
     const handleCompleteCollection = async (e: any) => {
@@ -131,7 +133,7 @@ function GridDetails() {
                 }
             }`,
             {
-                id: parent,
+                id: (parent || '').toLowerCase(),
             }
         ).toPromise()
             .then((resp) => {
@@ -141,6 +143,7 @@ function GridDetails() {
                     mints.map((m) => {
                         mappedMints[Number(m.tokenId.toString())] = {
                             ...m,
+                            owner: address,
                             meta: `${data.baseURI}/${m.tokenId}.json`,
                         }
                     })
@@ -168,10 +171,6 @@ function GridDetails() {
         if (!collectionId) return;
         try {
             (async () => {
-                fetchMints()
-                    .then(console.log)
-                    .catch((error) => console.error("failed to fetch mints: ", error));
-
                 const signer = await connector?.getSigner();
                 const collectionContract = new Contract(
                     collectionId,
@@ -190,6 +189,9 @@ function GridDetails() {
                 const sym = await collectionContract.symbol();
 
                 setData({name, sym, M, N, owner, parent, minted, baseURI});
+                fetchMints()
+                    .then(console.log)
+                    .catch((error) => console.error("failed to fetch mints: ", error));
             })();
         } catch (err) {
             console.error(err);
@@ -206,10 +208,10 @@ function GridDetails() {
     }, [mints]);
 
     useEffect(() => {
-        if (data.N && data.M) {
+        if (data.N && data.M && currentMintLoaded) {
             fetchParent(data.parent, []);
         }
-    }, [data?.N, data?.M, data?.parent]);
+    }, [data?.N, data?.M, data?.parent, currentMintLoaded]);
 
     useEffect(() => {
         if (error) {

@@ -114,7 +114,9 @@ function Block({mint, baseURI, owner, collection, setError, index, updateMint}: 
 
     return (
         <div className="border border-black p-5 aspect-square">
-            {imageUrl && <img src={imageUrl} alt={`nft-image-${index}`} className="w-[20px] h-[20px] bg-center bg-cover"/>}
+            <div className="w-full flex justify-center">
+                {imageUrl && <img src={imageUrl} alt={`nft-image-${index}`} className="max-w-[300px] w-full h-[300px] bg-center bg-cover"/>}
+            </div>
             {address === owner && (update || !mint) && <>
                 <label className="input-group w-min">
                     <input
@@ -131,11 +133,12 @@ function Block({mint, baseURI, owner, collection, setError, index, updateMint}: 
                     cancel
                 </button>}
             </>}
-            {(
+            {Boolean(
                 isConnected &&
                 address === owner &&
-                address !== mint?.address &&
-                mint?.tokenId
+                address !== mint?.owner &&
+                mint?.tokenId !== undefined &&
+                mint?.tokenId !== null
             ) && <button className="my-3 retro-btn" onClick={() => setUpdate(true)}>
                 Update File
             </button>}
