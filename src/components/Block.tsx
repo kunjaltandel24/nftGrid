@@ -107,6 +107,7 @@ function Block({mint, baseURI, owner, collection, setError, index, updateMint}: 
             .then((resp) => {
                 // setImageUrl once mint subgraph handler is fixed
                 console.log('image meta: ', resp);
+                setImageUrl(`${baseURI}/${resp.data.key}`);
             })
             .catch((error) => console.error('failed to fetch image meta: ', error));
     };

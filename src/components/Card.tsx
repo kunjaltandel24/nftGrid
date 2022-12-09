@@ -26,14 +26,19 @@ function Card(props: {
   const [mints, setMints] = useState<any[]>([])
 
   const fetchMints = async () => {
-    const resp = await axios.post('https://api.thegraph.com/subgraphs/name/yashthakor/eth-india-grid1', {
-      query: `{
-        mints(where: { collection_: {  id: "${collection}" } }) {
+    const resp = await axios.post('https://api.thegraph.com/subgraphs/name/yashthakor/grid-one', {
+      query: `query Mints($collectionId: String!) {
+        mints(where: { collection: $collectionId }) {
           id
           tokenId
+          collection {
+            id
+          }
         }
       }`,
-      variables: null,
+      extensions:{headers: null},
+      operationName: 'Mints',
+      variables: { collectionId: collection },
     });
 
     setMints(resp.data.data.mints);

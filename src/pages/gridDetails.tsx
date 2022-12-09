@@ -48,15 +48,20 @@ function GridDetails() {
 
   const fetchMints = async () => {
     const resp = await axios.post(
-      "https://api.thegraph.com/subgraphs/name/yashthakor/eth-india-grid1",
+      "https://api.thegraph.com/subgraphs/name/yashthakor/grid-one",
       {
-        query: `{
-        mints(where: { collection_: {  id: "${collectionId}" } }) {
-          id
-          tokenId
-        }
-      }`,
-        variables: null,
+        query: `query Mints($collectionId: String!) {
+          mints(where: { collection: $collectionId }) {
+            id
+            tokenId
+            collection {
+              id
+            }
+          }
+        }`,
+        extensions:{headers: null},
+        operationName: 'Mints',
+        variables: { collectionId },
       }
     );
 
@@ -107,9 +112,9 @@ function GridDetails() {
   };
 
   const fetchParent = useCallback((parent: string, otherParents: any[] = []) => {
-    axios.post('https://api.thegraph.com/subgraphs/name/yashthakor/eth-india-grid1', {
-      query: `{
-        collection(id: "${parent}") {
+    axios.post('https://api.thegraph.com/subgraphs/name/yashthakor/grid-one', {
+      query: `query Collection($id: String!) {
+        collection(id: $id) {
           id
           parent
           baseUrl
@@ -121,7 +126,9 @@ function GridDetails() {
           owner
         }
       }`,
-      variables: null,
+      extensions:{headers: null},
+      operationName: 'Collection',
+      variables: { id: parent },
     })
         .then((resp) => {
           if (!resp.data?.data?.collection?.parent) {
