@@ -12,7 +12,7 @@ function GridDetails() {
     const {address, connector} = useAccount();
     const [data, setData] = useState<any>({});
     const [mints, setMints] = useState<any[]>([]);
-    const [currentMintLoaded, setCurrentMintLoaded] = useState<any[]>([]);
+    const [currentMintLoaded, setCurrentMintLoaded] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null)
     const [parentCollections, setParentCollections] = useState<any[]>([]);
 
