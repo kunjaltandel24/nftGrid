@@ -45,7 +45,7 @@ function Card(props: {
         }
     ).toPromise();
 
-    setMints(resp.data.data.mints);
+    setMints(resp.data.mints);
   }
 
   useEffect(() => {

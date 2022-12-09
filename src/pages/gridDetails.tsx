@@ -137,7 +137,7 @@ function GridDetails() {
             }
         ).toPromise()
             .then((resp) => {
-                if (!resp.data?.data?.collection?.parent) {
+                if (!resp.data?.collection?.parent) {
                     setParentCollections([...otherParents]);
                     const mappedMints = Array.from({length: Number(data.N) * Number(data.M)});
                     mints.map((m) => {
