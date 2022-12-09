@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.4",
-    "axios": "1.2.0",
     "connectkit": "^1.1.0",
     "daisyui": "^2.42.1",
     "ethers": "^5.7.2",
@@ -25,6 +24,7 @@
     "react-infinite-scroll-component": "6.1.0",
     "react-router-dom": "^6.4.4",
     "sort-by": "^1.2.0",
+    "urql": "3.0.3",
     "wagmi": "^0.8.10"
   },
   "devDependencies": {

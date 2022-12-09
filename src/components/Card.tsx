@@ -7,6 +7,7 @@ import CreateGridBtn from "./CreateGridBtn";
 import ForkItBtn from "./ForkItBtn";
 import COLLECTION_ABI from "../contracts/collection_abi.json";
 import { Collection_abi } from '../contracts/types';
+import {createClient} from "urql";
 
 function Card(props: {
   collection: string
@@ -26,20 +27,23 @@ function Card(props: {
   const [mints, setMints] = useState<any[]>([])
 
   const fetchMints = async () => {
-    const resp = await axios.post('https://api.thegraph.com/subgraphs/name/yashthakor/grid-one', {
-      query: `query Mints($collectionId: String!) {
-        mints(where: { collection: $collectionId }) {
-          id
-          tokenId
-          collection {
-            id
-          }
-        }
-      }`,
-      extensions:{headers: null},
-      operationName: 'Mints',
-      variables: { collectionId: collection },
+    const client = createClient({
+      url: 'https://api.thegraph.com/subgraphs/name/yashthakor/grid-one',
     });
+    const resp = await client.query(
+        `query Mints($collectionId: String!) {
+              mints(where: { collection: $collectionId }) {
+                id
+                tokenId
+                collection {
+                  id
+                }
+              }
+            }`,
+        {
+          collectionId: collection,
+        }
+    ).toPromise();
 
     setMints(resp.data.data.mints);
   }
